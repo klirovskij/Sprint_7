@@ -14,18 +14,11 @@ import ru.praktikum.scooter.courier.CourierParams;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @RunWith(Parameterized.class)
-
 public class LoginCourierWithWrongDataTest {
     private Courier courier;
     private CourierClient courierClient;
     private int statusCode;
     private final String error;
-
-    private static Courier createdCourierWithoutPassword = new Courier("КурьерДляТеста", null, "Тестировочный");
-    private static Courier createdCourierWithoutLogin = new Courier(null, "Qwerty", "Тестировочный");
-    private static Courier createdCourierWithWrongPassword = new Courier("КурьерДляТеста", "Qwerty123", "Тестировочный");
-    private static Courier createdCourierWithWrongLogin = new Courier("КурьерДляТестаСОпечаткойАупввв", "Qwerty", "Тестировочный");
-
 
     public LoginCourierWithWrongDataTest(String error, int statusCode, Courier courier) {
         this.error = error;
@@ -36,28 +29,24 @@ public class LoginCourierWithWrongDataTest {
     @Parameterized.Parameters
     public static Object[][] getDataForTryingLogin() {
         return new Object[][]{
-                {"Учетная запись не найдена", 404, createdCourierWithWrongPassword},
-                {"Учетная запись не найдена", 404, createdCourierWithWrongLogin},
-                {"Недостаточно данных для входа", 400, createdCourierWithoutPassword},
-                {"Недостаточно данных для входа", 400, createdCourierWithoutLogin},
+                {"Учетная запись не найдена", 404, new Courier("КурьерДляТеста", "Qwerty123", "Тестировочный")},
+                {"Учетная запись не найдена", 404, new Courier("КурьерДляТестаСОпечаткойАупввв", "Qwerty", "Тестировочный")},
+                {"Недостаточно данных для входа", 400, new Courier("КурьерДляТеста", null, "Тестировочный")},
+                {"Недостаточно данных для входа", 400, new Courier(null, "Qwerty", "Тестировочный")},
         };
     }
 
     @Before
     public void setUp() {
-
         courierClient = new CourierClient();
     }
 
     @Test
     @DisplayName("Пробуем войти под курьером с невалидными или недостаточными данными")
-    @Description("Проверяем что код ответа и сообщение об ошибке соответствует в документации")
+    @Description("Проверяем, что код ответа и сообщение об ошибке соответствуют документации")
     public void tryToAuthCourier() {
         ValidatableResponse validatableResponse = courierClient.loginCourier(courier)
                 .assertThat().statusCode(statusCode).log().all()
-                .and().body("message", equalTo(error));
+                .and().body("message", equalTo(error);
     }
-
 }
-
-
