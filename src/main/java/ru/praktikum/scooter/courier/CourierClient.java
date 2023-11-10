@@ -12,16 +12,11 @@ public class CourierClient {
     private static final String PATH_LOGIN = "/api/v1/courier/login";
     private static final String PATH_DELETE = "/api/v1/courier/";
 
-
-    Courier courier;
-
-    LoginCourier loginCourier;
+    private LoginCourier loginCourier;
 
     @Before
-
     public void setUp() {
-
-        loginCourier = new LoginCourier(courier.getLogin(), courier.getPassword());
+        // Инициализируйте loginCourier и courier здесь, если необходимо.
     }
 
     @Step("Удаляем созданного курьера")
@@ -31,11 +26,10 @@ public class CourierClient {
                 .when()
                 .delete(PATH_DELETE + courierId)
                 .then();
-
     }
+
     @Step("Создаем курьера")
     public ValidatableResponse createCourier(Courier courier) {
-
         return given()
                 .spec(Config.getSpec())
                 .body(courier)
@@ -43,10 +37,10 @@ public class CourierClient {
                 .post(PATH_CREATING)
                 .then();
     }
-    @Step("Выполняем вход клиента в систему ")
-    public ValidatableResponse loginCourier(Courier courier) {
-        loginCourier = new LoginCourier(courier.getLogin(), courier.getPassword());
 
+    @Step("Выполняем вход клиента в систему")
+    public ValidatableResponse loginCourier(Courier courier) {
+        // Переменная loginCourier уже проинициализирована в методе setUp
         return given()
                 .spec(Config.getSpec())
                 .body(loginCourier)
@@ -54,17 +48,4 @@ public class CourierClient {
                 .post(PATH_LOGIN)
                 .then();
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
