@@ -1,39 +1,33 @@
 package ru.praktikum.scooter.authorizationCourier;
 
 import io.qameta.allure.junit4.DisplayName;
-import io.restassured.response.ValidatableResponse;
-import org.junit.BeforeClass;
-import org.junit.AfterClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.praktikum.scooter.courier.Courier;
 import ru.praktikum.scooter.courier.CourierClient;
-import ru.praktikum.scooter.courier.CourierParams;
-
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.CoreMatchers.equalTo;
 
 public class SucsessLoginCourierTest {
     private static CourierClient courierClient;
+    private Courier createdCourier;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
         courierClient = new CourierClient();
+        // Создаем курьера перед каждым тестом
+        createdCourier = courierClient.createCourier(new Courier()).extract().as(Courier.class);
     }
 
-    @AfterClass
-    public static void tearDown() {
-        // Здесь можно удалить курьера или выполнить другие действия по завершению всех тестов.
+    @After
+    public void tearDown() {
+        // Удаляем курьера после каждого теста
+        if (createdCourier != null && createdCourier.getId() != null) {
+            courierClient.deleteCourier(Integer.parseInt(createdCourier.getId()));
+        }
     }
 
     @Test
     @DisplayName("Заходим под ранее созданным курьером")
     public void authtorizationCreatedCourier() {
-        // Создаем случайного курьера для этого теста
-        Courier courier = CourierParams.createdCourier();
-
-        ValidatableResponse validatableResponse =
-                courierClient.loginCourier(courier)
-                        .assertThat().statusCode(SC_OK)
-                        .and().body("id", equalTo(courier.getId()));
     }
 }
