@@ -40,6 +40,28 @@ public class NewCourierTest {
                 .assertThat().body("message", equalTo("Логин уже используется. "));
     }
 
+    @Test
+    @DisplayName("Запрос без логина")
+    @Description("При создании указан пустой логин")
+    public void newCourierWithoutLogin() {
+        Courier courier = new Courier("", password, firstName);
+        Response response = CourierMethods.createCourier(courier);
+        response.then().assertThat().statusCode(400)
+                .and()
+                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
+
+    @Test
+    @DisplayName("Запрос без пароля")
+    @Description("При создании указан пустой пароль")
+    public void newCourierWithoutPassword() {
+        Courier courier = new Courier(login, "", firstName);
+        Response response = CourierMethods.createCourier(courier);
+        response.then().assertThat().statusCode(400)
+                .and()
+                .assertThat().body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
+    
     @After
     public void delCourier() {
         CourierMethods.delCourier(id);
